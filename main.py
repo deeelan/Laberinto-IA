@@ -1,3 +1,5 @@
+import pygame
+from sys import stdin
 class Cell:
     """
         Clase celda que describe si es pared, visitada, inicio, fin, punto de interes y puntaje. Esto para el algoritmo A*
@@ -36,7 +38,7 @@ class Maze():
                 B : inicio
                 E : fin
         """       
-        inp = open("src/maze.txt", 'r')
+        inp = open("src/maze test.txt", 'r')
         matrix = []
         for line in inp:
             matrix.append(list(line.replace('\n', '')))
@@ -91,9 +93,92 @@ class Maze():
         self.grid = []
         self.generateEmptyMaze(matrix)
 
+    def display(self):
+        # Definimos algunos colores
+        NEGRO = (0, 0, 0)
+        BLANCO = (255, 255, 255) ## esta mierda es el espacio vacio 0
+        COLORDEELAN = ( 255, 255, 0) ## esta mierda es la pared  #
+        ROJO = (255, 0, 0) ## esta mierda es el inicio    B
+        OTROC= (0,0,255) ## Otro color que no se es para punto de interes  +
+        OTROC2=(255,0,255)## Otro color cacorro para el final E
+        # Establecemos el LARGO y ALTO de cada celda de la retícula.
+        LARGO  = 20
+        ALTO = 20
+         
+        # Establecemos el margen entre las celdas.
+        MARGEN = 5
+         
+        # Creamos un array bidimensional. Un array bidimensional
+        # no es más que una lista de listas.
+        grid = []
+        for fila in range(120):
+            # Añadimos un array vacío que contendrá cada celda 
+            # en esta fila
+            grid.append([])
+            for columna in range(120):
+                grid[fila].append(0) # Añade una celda
+         
+        # Inicializamos pygame
+        pygame.init()
+          
+        # Establecemos el LARGO y ALTO de la pantalla
+        DIMENSION_VENTANA = [1780,1780]
+        pantalla = pygame.display.set_mode(DIMENSION_VENTANA)
+         
+        # Establecemos el título de la pantalla.
+        pygame.display.set_caption("A * de la PUJ made by Deelan and Caliche")
+         
+        # Iteramos hasta que el usuario pulse el botón de salir.
+        hecho = False
+         
+        # Lo usamos para establecer cuán rápido de refresca la pantalla.
+        reloj = pygame.time.Clock()
+         
+        # -------- Bucle Principal del Programa-----------
+        while not hecho:
+            for evento in pygame.event.get(): 
+                if evento.type == pygame.QUIT: 
+                    hecho = True
+            # Establecemos el fondo de pantalla.
+            pantalla.fill(NEGRO)
+
+            # Dibujamos la retícula para las dos AQUI VA LA CONCHA ESA QUE HAY QUE CAMBIAR PARA PINTAR 
+            for fila in self.grid:
+                #print(self.grid,"la cosa de deelan")
+                for celda in fila:
+                    color = BLANCO
+                    if celda.isWall==True:
+                        color = NEGRO
+                    if celda.isSpot ==True:
+                        color = COLORDEELAN ### no pinta
+                    if celda.isBegin ==True:
+                        color = ROJO
+                    if celda.visited ==True:
+                        color = OTROC
+                    if celda.isEnd ==True:
+                        color = OTROC2
+                    pygame.draw.rect(pantalla,
+                                     color,
+                                     [(MARGEN+LARGO) * celda.x + MARGEN,
+                                      (MARGEN+ALTO) * celda.y + MARGEN,
+                                      LARGO,
+                                      ALTO])
+             
+            # Limitamos a 60 fotogramas por segundo.
+            reloj.tick(60)
+         
+            # Avanzamos y actualizamos la pantalla con lo que hemos dibujado.
+            pygame.display.flip()
+             
+        # Pórtate bien con el IDLE.
+
+        pygame.quit()
+
+
 
 
 def main():
     m = Maze()
+    m.display()
 
 main()
