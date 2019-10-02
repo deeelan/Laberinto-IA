@@ -1,5 +1,41 @@
-import pygame
+import pygame as pygame
 from sys import stdin
+from pygame.locals import *
+
+## asi se pintan numeros
+"""   
+numero1 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('1',True,(0,0,200)), (100,200))
+
+numero2 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('2',True,(0,0,200)), (100,200))
+
+numero3 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('3',True,(0,0,200)), (100,200))
+
+numero4 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('4',True,(0,0,200)), (100,200))
+
+numero5 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('5',True,(0,0,200)), (100,200))
+
+numero6 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('6',True,(0,0,200)), (100,200))
+
+numero7 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('7',True,(0,0,200)), (100,200))
+
+numero8 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('8',True,(0,0,200)), (100,200))
+
+numero9 = pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('9',True,(0,0,200)), (100,200))
+
+numero0= pygame.draw.rect(gameDisplay,red,Rect((100,200),(30,30)))
+gameDisplay.blit(font.render('0',True,(0,0,200)), (100,200))
+"""  
+
+
 class Cell:
     """
         Clase celda que describe si es pared, visitada, inicio, fin, punto de interes y puntaje. Esto para el algoritmo A*
@@ -120,10 +156,11 @@ class Maze():
          
         # Inicializamos pygame
         pygame.init()
+        pygame.font.init()
           
         # Establecemos el LARGO y ALTO de la pantalla
-        DIMENSION_VENTANA = [1780,1780]
-        pantalla = pygame.display.set_mode(DIMENSION_VENTANA)
+        DIMENSION_VENTANA = [1180,1780]
+        pantalla = pygame.display.set_mode((DIMENSION_VENTANA),pygame.RESIZABLE)
          
         # Establecemos el título de la pantalla.
         pygame.display.set_caption("A * de la PUJ made by Deelan and Caliche")
@@ -133,6 +170,8 @@ class Maze():
          
         # Lo usamos para establecer cuán rápido de refresca la pantalla.
         reloj = pygame.time.Clock()
+
+        self.font = pygame.font.SysFont('Arial', 25)
          
         # -------- Bucle Principal del Programa-----------
         while not hecho:
@@ -142,7 +181,8 @@ class Maze():
             # Establecemos el fondo de pantalla.
             pantalla.fill(NEGRO)
 
-            # Dibujamos la retícula para las dos AQUI VA LA CONCHA ESA QUE HAY QUE CAMBIAR PARA PINTAR 
+            # Dibujamos la retícula para las dos AQUI VA LA CONCHA ESA QUE HAY QUE CAMBIAR PARA PINTAR
+
             for fila in self.grid:
                 #print(self.grid,"la cosa de deelan")
                 for celda in fila:
@@ -163,7 +203,11 @@ class Maze():
                                       (MARGEN+ALTO) * celda.y + MARGEN,
                                       LARGO,
                                       ALTO])
-             
+                    font = pygame.font.SysFont('Arial', 15)
+                    pantalla.blit(font.render(str(celda.score),True,(0,0,200)), [(MARGEN+LARGO) * celda.x + MARGEN,
+                                      (MARGEN+ALTO) * celda.y + MARGEN,
+                                      LARGO,
+                                      ALTO])
             # Limitamos a 60 fotogramas por segundo.
             reloj.tick(60)
          
