@@ -204,7 +204,10 @@ class Maze():
                                       LARGO,
                                       ALTO])
                     font = pygame.font.SysFont('Arial', 15)
-                    pantalla.blit(font.render(str(celda.score),True,(0,0,200)), [(MARGEN+LARGO) * celda.x + MARGEN,
+                    #if len(str(celda.score))>3:
+                        #str(celda.score)[0:3]
+                        #print("Corto",celda.score)
+                    pantalla.blit(font.render(str(celda.score)[0:3],True,(0,0,200)), [(MARGEN+LARGO) * celda.x + MARGEN,
                                       (MARGEN+ALTO) * celda.y + MARGEN,
                                       LARGO,
                                       ALTO])
