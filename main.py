@@ -1,5 +1,8 @@
 import pygame
-from sys import stdin
+
+posX = [-1, 0, 1, -1, 0, 1, -1, 0, 1]
+posY = [-1, -1, -1, 0, 0, 0, 1, 1, 1]
+
 class Cell:
     """
         Clase celda que describe si es pared, visitada, inicio, fin, punto de interes y puntaje. Esto para el algoritmo A*
@@ -16,15 +19,18 @@ class Cell:
 
     def __str__(self):
         if(self.isWall):
-            return 'W'
+            return f'W : {self.score}'
         elif(self.isEnd):
-            return 'E'
+            return f'E : {self.score}'
         elif(self.isBegin):
-            return 'B'
+            return f'B : {self.score}'
         elif(self.isSpot):
-            return '@'
+            return f'@ : {self.score}'
         else:
-            return ' '
+            return f'  : {self.score}'
+
+    def __eq__(self, other):
+        return (self.x == other.x) and (self.y == other.y)
 
 class Maze():
     def getInitialMatrix(self):
@@ -51,28 +57,30 @@ class Maze():
         """
             Metodo que genera la matriz de la clase Cell (sin scores)
         """
-        for y in range(0, len(matrix)):
+        for x in range(0, len(matrix)):
             row = []
-            for x in range(0, len(matrix[y])):
+            for y in range(0, len(matrix[x])):
                 cell = Cell(x, y)
                 cell.visited = False;
 
-                char = matrix[y][x]
+                char = matrix[x][y]
 
                 if(char == '#'):
                     cell.isWall = True;
                     cell.score = 0;
 
                 if(char == '0'):
-                    cell.score = 0;
+                    cell.score = 1;
 
                 if(char == '+'):
-                    cell.score = '100'
+                    cell.score = 100
                     cell.isSpot = True
 
                 if(char == 'B'):
                     cell.isBegin = True;
-                    cell.score = -1;
+                    cell.score = 0;
+                    self.initx = x
+                    self.inity = y
 
                 if(char == 'E'):
                     cell.isEnd = True;
@@ -91,7 +99,34 @@ class Maze():
     def __init__(self):
         matrix = self.getInitialMatrix();
         self.grid = []
+        self.initx = 0
+        self.inity = 0
+        self.path = []
         self.generateEmptyMaze(matrix)
+
+    def deelanEuristhic(self):
+        for i in range(1, len(self.grid) - 2):
+            for j in range(1, len(self.grid[i]) - 2):
+                if(not self.grid[i][j].visited):
+                    tCell = self.grid[i][j];
+
+                    tCell.visited = True;
+
+                    summ = 0
+                    for x in range(9):
+                        #print(self.grid[i - posX[x]][j - posY[x]])
+                        summ += self.grid[i - posX[x]][j - posY[x]].score
+
+                    tCell.score = 1 / (summ / 9)
+
+                    self.grid[i][j] = tCell;
+
+
+    def setScores(self, euristhic):
+        if(euristhic == 'deelan'):
+            self.deelanEuristhic();
+        else:
+            print('Euristhic function doesnt exists')
 
     def display(self):
         # Definimos algunos colores
@@ -171,14 +206,83 @@ class Maze():
             pygame.display.flip()
              
         # Pórtate bien con el IDLE.
-
         pygame.quit()
 
+    def solve(self, algorithm, euristhic):
+        self.setScores(euristhic)
 
+        if(algorithm == "astar"):
+            self.aStar();
+        else:
+            print("Algorithm not implemented yet")
+
+    def aStar(self):
+        start_node = self.grid[self.initx][self.inity]
+        #start_node.visited = True
+
+        openList = []
+        closedList = []
+        openList.append(start_node)
+
+        while(len(openList) > 0):
+            current_node = openList[0]
+
+            index = 0
+            for i in range(len(openList)):
+                if(openList[i].score < current_node.score):
+                    index = i
+                    current_node = openList[i]
+            
+            openList.pop(index)
+            current_node.visited = True
+            self.path.append(current_node)
+            closedList.append(current_node)
+
+            #print(f"is end? {current_node.isEnd}")
+            if(current_node.isEnd):
+                return
+            
+            children = []
+
+            for i in range(9):
+                #print(f"in pos ({current_node.x}, {current_node.y})")
+                #print(f"pivot in pos ({current_node.x - posX[i]}, {current_node.y - posY[i]})")
+                node_pivot = self.grid[current_node.x - posX[i]][current_node.y - posY[i]]
+
+                #print(f"node_pivot >>> {node_pivot}")
+
+                #print(f"is not wall ? {not node_pivot.isWall}")
+                if(not node_pivot.isWall):
+                    children.append(node_pivot)
+
+            print(f"children >>> {children}")
+
+            for child in children:
+                for closed_child in closedList:
+                    if(child == closed_child):
+                        continue
+
+                child.score += current_node.score
+
+                for open_child in openList:
+                    if(child == open_child):
+                        continue
+
+                openList.append(child)
+
+            #print(openList)
+            #print(closedList)
+
+        for cell in self.path:
+            print(cell)
 
 
 def main():
     m = Maze()
+    #m.display()
+
+    m.solve('astar', 'deelan')
     m.display()
+
 
 main()
