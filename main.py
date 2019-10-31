@@ -1,4 +1,10 @@
 import pygame
+<<<<<<< Updated upstream
+=======
+import math
+from sys import stdin
+from pygame.locals import *
+>>>>>>> Stashed changes
 
 posX = [-1, 0, 1, -1, 0, 1, -1, 0, 1]
 posY = [-1, -1, -1, 0, 0, 0, 1, 1, 1]
@@ -73,7 +79,7 @@ class Maze():
                     cell.score = 1;
 
                 if(char == '+'):
-                    cell.score = 100
+                    cell.score = 0
                     cell.isSpot = True
 
                 if(char == 'B'):
@@ -84,10 +90,13 @@ class Maze():
 
                 if(char == 'E'):
                     cell.isEnd = True;
-                    cell.score = 1000;
+                    cell.score = 0;
+                    self.goal = cell;
 
                 row.append(cell);
             self.grid.append(row);
+
+        assert(self.goal.x != -1 and self.goal.y != -1)
 
         # strin = ''
         # for row in self.grid:
@@ -103,28 +112,40 @@ class Maze():
         self.inity = 0
         self.path = []
         self.generateEmptyMaze(matrix)
+        self.goal = Cell(-1, -1)
 
     def deelanEuristhic(self):
-        for i in range(1, len(self.grid) - 2):
-            for j in range(1, len(self.grid[i]) - 2):
-                if(not self.grid[i][j].visited):
-                    tCell = self.grid[i][j];
+        for i in range(1, len(self.grid) - 1):
+            for j in range(1, len(self.grid[i]) - 1):
+                #if(not self.grid[i][j].visited):
+                tCell = self.grid[i][j];
 
-                    tCell.visited = True;
+                tCell.visited = True;
 
-                    summ = 0
-                    for x in range(9):
-                        #print(self.grid[i - posX[x]][j - posY[x]])
-                        summ += self.grid[i - posX[x]][j - posY[x]].score
+                summ = 0
+                for x in range(9):
+                    #print(self.grid[i - posX[x]][j - posY[x]])
+                    summ += self.grid[i - posX[x]][j - posY[x]].score
 
-                    tCell.score = 1 / (summ / 9)
+                tCell.score = 1 / (summ / 9)
 
-                    self.grid[i][j] = tCell;
+                self.grid[i][j] = tCell;
 
+    def distanceEuristhic(self):
+        print('goal >>> (' + str(self.goal.x) +  ', ' + str(self.goal.y) + ')')
+
+        for i in range(1, len(self.grid) - 1):
+            for j in range(1, len(self.grid[i]) - 1):
+                tCell = self.grid[i][j]
+                if(not tCell.isWall):
+                    tCell.score = math.hypot(self.goal.x - tCell.x, self.goal.y - tCell.y)
+                    self.grid[i][j] = tCell
 
     def setScores(self, euristhic):
         if(euristhic == 'deelan'):
             self.deelanEuristhic();
+        elif(euristhic == 'distance'):
+            self.distanceEuristhic();
         else:
             print('Euristhic function doesnt exists')
 
@@ -188,8 +209,8 @@ class Maze():
                         color = COLORDEELAN ### no pinta
                     if celda.isBegin ==True:
                         color = ROJO
-                    if celda.visited ==True:
-                        color = OTROC
+                    #if celda.visited ==True:
+                    #    color = OTROC
                     if celda.isEnd ==True:
                         color = OTROC2
                     pygame.draw.rect(pantalla,
@@ -198,7 +219,18 @@ class Maze():
                                       (MARGEN+ALTO) * celda.y + MARGEN,
                                       LARGO,
                                       ALTO])
+<<<<<<< Updated upstream
              
+=======
+                    font = pygame.font.SysFont('Arial', 15)
+                    #if len(str(celda.score))>3:
+                        #str(celda.score)[0:3]
+                        #print("Corto",celda.score)
+                    pantalla.blit(font.render(str(celda.score)[:3],True,(0,0,200)), [(MARGEN+LARGO) * celda.x + MARGEN,
+                                      (MARGEN+ALTO) * celda.y + MARGEN,
+                                      LARGO,
+                                      ALTO])
+>>>>>>> Stashed changes
             # Limitamos a 60 fotogramas por segundo.
             reloj.tick(60)
          
@@ -224,6 +256,7 @@ class Maze():
         closedList = []
         openList.append(start_node)
 
+        i = 0
         while(len(openList) > 0):
             current_node = openList[0]
 
@@ -255,7 +288,7 @@ class Maze():
                 if(not node_pivot.isWall):
                     children.append(node_pivot)
 
-            print(f"children >>> {children}")
+            #print(f"children >>> {children}")
 
             for child in children:
                 for closed_child in closedList:
@@ -270,19 +303,22 @@ class Maze():
 
                 openList.append(child)
 
+            i+=1
+            #if(i % 100 == 0):
+            self.display()
             #print(openList)
             #print(closedList)
 
-        for cell in self.path:
-            print(cell)
+        #for cell in self.path:
+        #    print(cell)
+
 
 
 def main():
     m = Maze()
     #m.display()
 
-    m.solve('astar', 'deelan')
     m.display()
-
+    m.solve('astar', 'distance')
 
 main()
