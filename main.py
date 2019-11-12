@@ -1,6 +1,7 @@
 import pygame as pygame
 from sys import stdin
 from pygame.locals import *
+import pygame.gfxdraw
 
 ## asi se pintan numeros
 """   
@@ -157,6 +158,8 @@ class Maze():
         # Inicializamos pygame
         pygame.init()
         pygame.font.init()
+
+        image = pygame.image.load("Javeriana_Cali.jpg")
           
         # Establecemos el LARGO y ALTO de la pantalla
         DIMENSION_VENTANA = [1180,1780]
@@ -180,6 +183,8 @@ class Maze():
                     hecho = True
             # Establecemos el fondo de pantalla.
             pantalla.fill(NEGRO)
+            pantalla.blit(image, [0, 0])
+            #pygame.display.flip()
 
             # Dibujamos la retícula para las dos AQUI VA LA CONCHA ESA QUE HAY QUE CAMBIAR PARA PINTAR
 
@@ -197,9 +202,10 @@ class Maze():
                         color = OTROC
                     if celda.isEnd ==True:
                         color = OTROC2
+                    #pygame.gfxdraw.box(pantalla, pygame.Rect((MARGEN+LARGO) * celda.x + MARGEN,(MARGEN+ALTO) * celda.y + MARGEN,LARGO,ALTO), (100,0,0,127))
                     pygame.draw.rect(pantalla,
-                                     color,
-                                     [(MARGEN+LARGO) * celda.x + MARGEN,
+                                    color,
+                                       [(MARGEN+LARGO) * celda.x + MARGEN,
                                       (MARGEN+ALTO) * celda.y + MARGEN,
                                       LARGO,
                                       ALTO])
@@ -227,5 +233,4 @@ class Maze():
 def main():
     m = Maze()
     m.display()
-
 main()
