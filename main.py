@@ -132,12 +132,12 @@ class Maze():
 
     def display(self):
         # Definimos algunos colores
-        NEGRO = (0, 0, 0)
-        BLANCO = (255, 255, 255) ## esta mierda es el espacio vacio 0
-        COLORDEELAN = ( 255, 255, 0) ## esta mierda es la pared  #
-        ROJO = (255, 0, 0) ## esta mierda es el inicio    B
-        OTROC= (0,0,255) ## Otro color que no se es para punto de interes  +
-        OTROC2=(255,0,255)## Otro color cacorro para el final E
+        NEGRO = (0, 0, 0, 128)
+        BLANCO = (255, 255, 255, 128) ## esta mierda es el espacio vacio 0
+        COLORDEELAN = ( 255, 255, 0, 128) ## esta mierda es la pared  #
+        ROJO = (255, 0, 0, 128) ## esta mierda es el inicio    B
+        OTROC= (0,0,255, 128) ## Otro color que no se es para punto de interes  +
+        OTROC2=(255,0,255, 128)## Otro color cacorro para el final E
         # Establecemos el LARGO y ALTO de cada celda de la retícula.
         LARGO  = 20
         ALTO = 20
@@ -159,7 +159,7 @@ class Maze():
         pygame.init()
         pygame.font.init()
 
-        image = pygame.image.load("Javeriana_Cali.jpg")
+        image = pygame.image.load("mapa.jpeg")
           
         # Establecemos el LARGO y ALTO de la pantalla
         DIMENSION_VENTANA = [1180,1780]
@@ -208,7 +208,7 @@ class Maze():
                                        [(MARGEN+LARGO) * celda.x + MARGEN,
                                       (MARGEN+ALTO) * celda.y + MARGEN,
                                       LARGO,
-                                      ALTO])
+                                      ALTO], 2)
                     font = pygame.font.SysFont('Arial', 15)
                     #if len(str(celda.score))>3:
                         #str(celda.score)[0:3]
